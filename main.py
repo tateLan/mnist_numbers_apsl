@@ -8,20 +8,32 @@ import cv2
 
 
 def get_mnist_data_to_train():
-    pass
+    print('donwloading mnist data ... ', end='')
 
+    data, labels = fetch_openml('mnist_784', version=1, return_X_y=True)
+
+    print('DONE!')
+    return data, labels
 
 @ignore_warnings(category=ConvergenceWarning)
 def train_classifier(data, labels):
-    pass
+    print('training ... ', end='')
+    train_img, test_img, train_lbl, test_lbl = train_test_split(data, labels, test_size=1 / 7.0, random_state=0)
+    logisticRegr = LogisticRegression(solver='lbfgs')
+    logisticRegr.fit(train_img, train_lbl)
+
+    print('DONE!')
+    return logisticRegr, test_img, test_lbl
 
 
 def predict_image(logisticRegr, im):
-    pass
+    predictions = logisticRegr.predict(im.reshape(1, -1))
+    return predictions[0]
 
 
 def get_accuracy(classifier, test_input, test_labels):
-    pass
+    score = classifier.score(test_input, test_labels)
+    return score
 
 
 if __name__ == '__main__':
