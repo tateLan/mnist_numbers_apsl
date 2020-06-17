@@ -40,14 +40,29 @@ if __name__ == '__main__':
     if len(sys.argv) == 1:
         print('too few arguments! pass 1 or 0 to generate test jpg images, and path to image!')
     elif len(sys.argv) == 2:
-        try:
-            is_images_needed_to_generate = bool(sys.argv[1])
-        except Exception as err:
-            print('pass 1 or 0 to generate test jpg images, then path to image!')
-    elif len(sys.argv) == 3:
-        try:
-            train_classifier()
-        except Exception as err:
-            print('pass 1 or 0 to generate test jpg images, and path to image!')
+        path = sys.argv[1]
+
+        images, labels = get_mnist_data_to_train()
+        classifier, test_data, test_labels = train_classifier(images, labels)
+
+        while True:
+            try:
+                im = cv2.cvtColor(cv2.imread(path), cv2.COLOR_BGR2GRAY).reshape(-1)
+
+                prediction = predict_image(classifier, im)
+                accuracy_of_model = get_accuracy(classifier, test_data, test_labels)
+
+                print(f'with accuracy of {accuracy_of_model}, number at image is {prediction}')
+
+                print(f'{"*" * 30}\n')
+                key = input('enter new path to image, or q to exit: ')
+                if key == 'q':
+                    break
+                else:
+                    path = key
+
+            except Exception as err:
+                print('image path invalid!')
+                break
 
 
